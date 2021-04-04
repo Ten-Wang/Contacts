@@ -33,25 +33,10 @@ class APIContacts {
         }
     }
 
-    fun sync(resource: APIContacts): APIContacts {
-        if (this.contacts == null) {
-            for (temp: Contacts in resource.contacts!!) {
-                this.contacts = resource.contacts
-            }
-        } else {
-            for (temp: Contacts in resource.contacts!!) {
-                var finded = false
-                for (local: Contacts in this.contacts!!) {
-                    if (local.id == temp.id) {
-                        local.copy(temp)
-                        finded = true
-                        break
-                    }
-                }
-                if (!finded) {
-                    contacts!!.add(temp)
-                }
-            }
+    fun sync(resource: APIContacts, starred: HashMap<Int, Boolean>): APIContacts {
+        for (contact: Contacts in resource.contacts!!) {
+            this.contacts = resource.contacts
+            contact.starred = (starred[contact.id] == true)
         }
         return this
     }

@@ -3,6 +3,8 @@ package tw.teng.practice.contact.resource.repository
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
+import tw.teng.practice.contact.resource.network.OnApiListener
+import tw.teng.practice.contact.resource.network.RoloWebApi
 import tw.teng.practice.contact.resource.network.mock.Data
 import tw.teng.practice.contact.resource.network.model.APIContacts
 import tw.teng.practice.contact.ui.contact.DisplayState
@@ -29,7 +31,7 @@ class AppRepository private constructor(private val _application: Application) {
     init {
 //        if (BuildConfig.DEBUG)
 //            setSharedPref(getMockData())
-        contactsListLiveData.value = getSharedPref()
+        contactsListLiveData.value = getAPIContactsFormSP()
         displayModeLiveData.value = DisplayState.ALL.state
     }
 
@@ -41,53 +43,84 @@ class AppRepository private constructor(private val _application: Application) {
         Pref.setContacts(_application, Gson().toJson(mockData))
     }
 
-    private fun getSharedPref(): APIContacts? {
+    private fun getAPIContactsFormSP(): APIContacts? {
         return Gson().fromJson(Pref.getContacts(_application), APIContacts::class.java)
+    }
+
+    private fun saveStarredToSharedPref(storedStarred: HashMap<Int, Boolean>) {
+        Pref.insertToSP(_application, storedStarred)
+    }
+
+    private fun getStarredFormSharedPref(): HashMap<Int, Boolean> {
+        return Pref.readFromSP(_application)
     }
 
     fun clickStarred(position: Int) {
         val apiContacts = contactsListLiveData.value
         val starred = apiContacts?.contacts?.get(position)?.starred
         apiContacts?.contacts?.get(position)?.starred = (!starred!!)
-        saveStarred(apiContacts)
+        saveStarred(apiContacts.contacts?.get(position)!!)
+        Pref.setContacts(
+            _application,
+            Gson().toJson(apiContacts)
+        )
         contactsListLiveData.postValue(apiContacts)
     }
 
-    private fun saveStarred(resource: APIContacts?) {
-        // read all data
-        val stored = getSharedPref()
-        // compare id
-        for (c: APIContacts.Contacts in resource?.contacts!!) {
-            for (contact: APIContacts.Contacts in stored?.contacts!!) {
-                if (contact.id == c.id) {
-                    contact.starred = c.starred
-                }
-            }
+    private fun saveStarred(contact: APIContacts.Contacts) {
+        val storedStarred = getStarredFormSharedPref()
+        if (storedStarred[contact.id] == true) {
+            storedStarred.remove(contact.id)
+        } else {
+            storedStarred[contact.id] = true
         }
-        // record real star position
-        Pref.setContacts(
-            _application,
-            Gson().toJson(stored)
-        )
+        saveStarredToSharedPref(storedStarred)
     }
+
 
     fun selectDisplayState(event: Int) {
         var apiContacts = contactsListLiveData.value
         when (event) {
             STARRED.state -> {
                 // all to starred
-                val list = getSharedPref()?.contacts
+                val list = getAPIContactsFormSP()?.contacts
                 apiContacts?.contacts =
                     list?.filter { contacts -> (contacts.starred) }?.toMutableList()
-                contactsListLiveData.postValue(apiContacts)
             }
             else -> { // same as allClick
                 // starred to all
-                apiContacts = getSharedPref()
-                contactsListLiveData.postValue(apiContacts)
+                apiContacts = getAPIContactsFormSP()
             }
         }
+        contactsListLiveData.postValue(apiContacts)
         displayModeLiveData.value = event
         displayModeLiveData.postValue(event)
+    }
+
+    fun onNetworkAvailable() {
+        RoloWebApi.getInstance(_application).users(object :
+            OnApiListener<APIContacts> {
+            override fun onApiTaskSuccess(responseData: APIContacts) {
+                syncLocalData(responseData)
+            }
+
+            override fun onApiTaskFailure() {
+            }
+
+        })
+    }
+
+    private fun syncLocalData(responseData: APIContacts) {
+        val local = Gson().fromJson(
+            Pref.getContacts(_application),
+            APIContacts::class.java
+        )
+        Pref.setContacts(
+            _application, Gson().toJson(
+                local.sync(responseData, Pref.readFromSP(_application))
+            )
+        )
+        contactsListLiveData.value = local
+        contactsListLiveData.postValue(local)
     }
 }

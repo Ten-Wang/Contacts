@@ -92,6 +92,11 @@ abstract class RecyclerAdapterBase<T> protected constructor(dataList: MutableLis
         recyclerAdapterHelper.setHasFooterView(true)
     }
 
+    fun setHeaderView(headerView: View) {
+        this.headerView = headerView
+        recyclerAdapterHelper.setHasHeaderView(true)
+    }
+
     private fun onCreateHeaderViewHolder(
         inflater: LayoutInflater,
         parent: ViewGroup

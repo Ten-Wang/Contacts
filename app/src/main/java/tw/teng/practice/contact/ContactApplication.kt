@@ -8,8 +8,7 @@ import androidx.annotation.RequiresApi
 import com.google.gson.Gson
 import tw.teng.practice.contact.resource.network.OnApiListener
 import tw.teng.practice.contact.resource.network.RoloWebApi
-import tw.teng.practice.contact.resource.network.mock.Data
-import tw.teng.practice.contact.resource.network.model.Users
+import tw.teng.practice.contact.resource.network.model.APIContacts
 import tw.teng.practice.contact.utils.Pref
 
 class ContactApplication : MultiDexApplication() {
@@ -24,18 +23,16 @@ class ContactApplication : MultiDexApplication() {
             registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-//                    RoloWebApi.getInstance(applicationContext).users(object :
-//                        OnApiListener<Users> {
-//                        override fun onApiTaskSuccess(responseData: Users) {
-//                            val result =
-//                                syncData(responseData, Pref.getContacts(applicationContext))
-//                            Pref.setContacts(applicationContext, Gson().toJson(result))
-//                        }
-//
-//                        override fun onApiTaskFailure() {
-//                        }
-//
-//                    })
+                    RoloWebApi.getInstance(applicationContext).users(object :
+                        OnApiListener<APIContacts> {
+                        override fun onApiTaskSuccess(responseData: APIContacts) {
+                            syncLocalData(responseData)
+                        }
+
+                        override fun onApiTaskFailure() {
+                        }
+
+                    })
                     isNetworkConnected = true
                 }
 
@@ -53,7 +50,15 @@ class ContactApplication : MultiDexApplication() {
 
     }
 
-    private fun syncData(responseData: Users, contacts: String?) {
-        TODO("Not yet implemented")
+    private fun syncLocalData(responseData: APIContacts) {
+        val local = Gson().fromJson(
+            Pref.getContacts(applicationContext),
+            APIContacts::class.java
+        )
+        Pref.setContacts(
+            applicationContext, Gson().toJson(
+                local.sync(responseData)
+            )
+        )
     }
 }

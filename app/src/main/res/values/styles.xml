@@ -2,11 +2,15 @@
 
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-    </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar"></style>
+
     <style name="AppTheme.ActivityNoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!-- This is used for statusbar color. -->
+        <item name="colorPrimaryDark">@color/black</item>
+        <!-- This is used for statusbar content color. If statusbar Color is light, use "true" otherwise use "false"-->
+        <item name="android:windowLightStatusBar">false</item>
     </style>
 </resources>

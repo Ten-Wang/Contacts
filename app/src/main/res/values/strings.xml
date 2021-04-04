@@ -1,6 +1,20 @@
 <resources>
     <string name="app_name">Contact</string>
+    <string name="str_null">str_null</string>
+
+    <!--    Network-->
+    <string name="api_url_prefix"> https://51ab3c19-6483-4cd8-81d2-ece629815aa2.mock.pstmn.io/</string>
+
+    <!--    Fragment Contact List-->
     <string name="fragment_contact_list_title">Contacts</string>
 
-    <string name="api_url_prefix"> https://51ab3c19-6483-4cd8-81d2-ece629815aa2.mock.pstmn.io/</string>
+    <!--    Fragment Contact Detail-->
+    <string name="fragment_contact_detail_email">fragment_contact_detail_email</string>
+    <string name="fragment_contact_detail_bs">bs</string>
+    <string name="fragment_contact_detail_name">Name</string>
+    <string name="fragment_contact_detail_company">Company</string>
+    <string name="email">email</string>
+    <string name="name">Name</string>
+    <string name="starred">Starred</string>
+    <string name="all">All</string>
 </resources>

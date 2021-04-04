@@ -2,19 +2,24 @@ package tw.teng.practice.contact.ui
 
 import android.app.Application
 import androidx.lifecycle.MutableLiveData
-import tw.teng.practice.contact.resource.network.model.Users
+import tw.teng.practice.contact.resource.network.model.APIContacts
 import tw.teng.practice.contact.ui.base.BaseViewModel
 
 class MainViewModel(application: Application) : BaseViewModel(application) {
-    //MainFragment的RecyclerView用的資料
-    var listLiveData: Users? = appRepo.usersLiveData.value
 
-    //記綠被點選的Item，在DetailFragment就取selected來使用
-    var selected: MutableLiveData<Users.Contacts> = MutableLiveData()
+    var contactsListLiveData: MutableLiveData<APIContacts> = appRepo.contactsListLiveData
+    var selected: MutableLiveData<APIContacts.Contacts> = MutableLiveData()
+    var selectDisplayLivedata = appRepo.displayModeLiveData
 
-    var openItemEvent: MutableLiveData<Users.Contacts> = MutableLiveData()
+    fun select(position: Int) {
+        selected.value = contactsListLiveData.value?.contacts!![position]
+    }
 
-    init {
-        listLiveData?.contacts?.get(0).also { openItemEvent.value = it }
+    fun selectDisplayState(event: Int) {
+        appRepo.selectDisplayState(event)
+    }
+
+    fun clickStarred(position: Int) {
+        appRepo.clickStarred(position)
     }
 }

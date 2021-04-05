@@ -48,7 +48,7 @@ class ContactDetailFragment : Fragment() {
             run {
                 Glide.with(view)
                     .load(it.pictureUrl)
-                    .apply(RequestOptions.bitmapTransform(RoundedCorners(20)))
+                    .apply(RequestOptions.bitmapTransform(RoundedCorners(10)))
                     .diskCacheStrategy(DiskCacheStrategy.DATA)
                     .into(view.findViewById(R.id.img_avatar))
                 view.findViewById<TextView>(R.id.tv_name).text = it.name

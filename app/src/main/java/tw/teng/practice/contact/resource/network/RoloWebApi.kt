@@ -23,5 +23,4 @@ class RoloWebApi constructor(context: Context) : WebApi(context) {
             .getUsers()
             .enqueue(ApiCallback(listener))
     }
-
 }

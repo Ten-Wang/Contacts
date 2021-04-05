@@ -34,15 +34,6 @@ class ContactListAdapter internal constructor(
         )
     }
 
-    fun onCreateItemViewHolder(
-        inflater: LayoutInflater,
-        parent: ViewGroup
-    ): ContactViewHolder {
-        return ContactViewHolder(
-            inflater.inflate(R.layout.item_contact_list, parent, false)
-        )
-    }
-
     override fun onBindViewHolder(viewHolder: ContactViewHolder, position: Int) {
         viewHolder.bindData(itemList, position)
     }
@@ -77,14 +68,6 @@ class ContactListAdapter internal constructor(
                 imgIconStar.visibility = View.INVISIBLE
                 imgStarred.setImageResource(R.drawable.ic_action_star)
             }
-            contentLayout.setOnClickListener {
-                selectedPosition = position
-                mListener.onItemClick(position)
-            }
-            imgStarred.setOnClickListener {
-                mListener.onStarredActionClick(position)
-            }
-
             tvName.text = item.name
             tvEmail.text = item.email
             Glide.with(itemView.context)
@@ -112,6 +95,14 @@ class ContactListAdapter internal constructor(
                 })
                 .diskCacheStrategy(DiskCacheStrategy.DATA)
                 .into(imgAvatar)
+
+            contentLayout.setOnClickListener {
+                selectedPosition = position
+                mListener.onItemClick(position)
+            }
+            imgStarred.setOnClickListener {
+                mListener.onStarredActionClick(position)
+            }
         }
     }
 

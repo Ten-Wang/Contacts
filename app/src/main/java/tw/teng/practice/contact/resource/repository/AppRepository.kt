@@ -43,16 +43,16 @@ class AppRepository private constructor(private val _application: Application) {
         Pref.setContacts(_application, Gson().toJson(mockData))
     }
 
-    private fun getAPIContactsFormSP(): APIContacts? {
-        return Gson().fromJson(Pref.getContacts(_application), APIContacts::class.java)
+    private fun getAPIContactsFormSP(): APIContacts {
+        return Pref.getContacts(_application)
     }
 
-    private fun saveStarredToSharedPref(storedStarred: HashMap<Int, Boolean>) {
-        Pref.insertToSP(_application, storedStarred)
+    private fun saveStarredToSP(storedStarred: HashMap<Int, Boolean>) {
+        Pref.setStars(_application, storedStarred)
     }
 
-    private fun getStarredFormSharedPref(): HashMap<Int, Boolean> {
-        return Pref.readFromSP(_application)
+    private fun getStarredFormSP(): HashMap<Int, Boolean> {
+        return Pref.getStars(_application)
     }
 
     fun clickStarred(position: Int) {
@@ -60,17 +60,16 @@ class AppRepository private constructor(private val _application: Application) {
         val contact = apiContacts?.contacts?.get(position)
         val starred = contact?.starred
         contact?.starred = (!starred!!)
+
         saveStarred(contact)
+
         if (displayModeLiveData.value == DisplayState.ALL.state) {
             Pref.setContacts(
                 _application,
                 Gson().toJson(apiContacts)
             )
         } else {
-            val local = Gson().fromJson(
-                Pref.getContacts(_application),
-                APIContacts::class.java
-            )
+            val local = Pref.getContacts(_application)
             for(local_contact: APIContacts.Contacts in local.contacts!!){
                 if(local_contact.id == contact.id){
                     local_contact.starred = contact.starred
@@ -82,17 +81,18 @@ class AppRepository private constructor(private val _application: Application) {
                 Gson().toJson(local)
             )
         }
+
         contactsListLiveData.postValue(apiContacts)
     }
 
     private fun saveStarred(contact: APIContacts.Contacts) {
-        val storedStarred = getStarredFormSharedPref()
+        val storedStarred = getStarredFormSP()
         if (storedStarred[contact.id] == true) {
             storedStarred.remove(contact.id)
         } else {
             storedStarred[contact.id] = true
         }
-        saveStarredToSharedPref(storedStarred)
+        saveStarredToSP(storedStarred)
     }
 
 
@@ -101,7 +101,7 @@ class AppRepository private constructor(private val _application: Application) {
         when (event) {
             STARRED.state -> {
                 // all to starred
-                val list = getAPIContactsFormSP()?.contacts
+                val list = getAPIContactsFormSP().contacts
                 apiContacts?.contacts =
                     list?.filter { contacts -> (contacts.starred) }?.toMutableList()
             }
@@ -129,13 +129,10 @@ class AppRepository private constructor(private val _application: Application) {
     }
 
     private fun syncLocalData(responseData: APIContacts) {
-        val local = Gson().fromJson(
-            Pref.getContacts(_application),
-            APIContacts::class.java
-        )
+        val local = Pref.getContacts(_application)
         Pref.setContacts(
             _application, Gson().toJson(
-                local.sync(responseData, Pref.readFromSP(_application))
+                local.sync(responseData, Pref.getStars(_application))
             )
         )
         contactsListLiveData.value = local

@@ -5,6 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import tw.teng.practice.contact.resource.network.model.APIContacts
 
 
 object Pref {
@@ -15,22 +16,25 @@ object Pref {
     fun setContacts(context: Context, contacts: String) {
         val sharedPreferences = context.applicationContext.getSharedPreferences(
             PREFS_CONTACTS_FN,
-            Context.MODE_PRIVATE
+            MODE_PRIVATE
         )
         val editor = sharedPreferences.edit()
         editor.putString(PREFS_USERS_FN, contacts)
         editor.apply()
     }
 
-    fun getContacts(context: Context): String? {
+    fun getContacts(context: Context): APIContacts {
         val sharedPreferences = context.applicationContext.getSharedPreferences(
             PREFS_CONTACTS_FN,
-            Context.MODE_PRIVATE
+            MODE_PRIVATE
         )
-        return sharedPreferences.getString(PREFS_USERS_FN, "{}")
+        return Gson().fromJson(
+            sharedPreferences.getString(PREFS_USERS_FN, "{}"),
+            APIContacts::class.java
+        )
     }
 
-    fun insertToSP(context: Context, jsonMap: HashMap<Int, Boolean>) {
+    fun setStars(context: Context, jsonMap: HashMap<Int, Boolean>) {
         val jsonString = Gson().toJson(jsonMap)
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFS_HASHMAP_FN, MODE_PRIVATE)
@@ -39,7 +43,7 @@ object Pref {
         editor.apply()
     }
 
-    fun readFromSP(context: Context): HashMap<Int, Boolean> {
+    fun getStars(context: Context): HashMap<Int, Boolean> {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences(PREFS_HASHMAP_FN, MODE_PRIVATE)
         val defValue =

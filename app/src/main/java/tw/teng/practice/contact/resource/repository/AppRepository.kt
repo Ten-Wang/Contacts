@@ -57,13 +57,31 @@ class AppRepository private constructor(private val _application: Application) {
 
     fun clickStarred(position: Int) {
         val apiContacts = contactsListLiveData.value
-        val starred = apiContacts?.contacts?.get(position)?.starred
-        apiContacts?.contacts?.get(position)?.starred = (!starred!!)
-        saveStarred(apiContacts.contacts?.get(position)!!)
-        Pref.setContacts(
-            _application,
-            Gson().toJson(apiContacts)
-        )
+        val contact = apiContacts?.contacts?.get(position)
+        val starred = contact?.starred
+        contact?.starred = (!starred!!)
+        saveStarred(contact)
+        if (displayModeLiveData.value == DisplayState.ALL.state) {
+            Pref.setContacts(
+                _application,
+                Gson().toJson(apiContacts)
+            )
+        } else {
+            val local = Gson().fromJson(
+                Pref.getContacts(_application),
+                APIContacts::class.java
+            )
+            for(local_contact: APIContacts.Contacts in local.contacts!!){
+                if(local_contact.id == contact.id){
+                    local_contact.starred = contact.starred
+                    break
+                }
+            }
+            Pref.setContacts(
+                _application,
+                Gson().toJson(local)
+            )
+        }
         contactsListLiveData.postValue(apiContacts)
     }
 

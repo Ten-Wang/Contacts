@@ -1,6 +1,7 @@
 package tw.teng.practice.contact.resource.repository
 
 import android.app.Application
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import tw.teng.practice.contact.resource.network.OnApiListener
@@ -70,8 +71,8 @@ class AppRepository private constructor(private val _application: Application) {
             )
         } else {
             val local = Pref.getContacts(_application)
-            for(local_contact: APIContacts.Contacts in local.contacts!!){
-                if(local_contact.id == contact.id){
+            for (local_contact: APIContacts.Contacts in local.contacts!!) {
+                if (local_contact.id == contact.id) {
                     local_contact.starred = contact.starred
                     break
                 }
@@ -122,7 +123,8 @@ class AppRepository private constructor(private val _application: Application) {
                 syncLocalData(responseData)
             }
 
-            override fun onApiTaskFailure() {
+            override fun onApiTaskFailure(toString: String) {
+                Toast.makeText(_application, toString, Toast.LENGTH_SHORT).show()
             }
 
         })

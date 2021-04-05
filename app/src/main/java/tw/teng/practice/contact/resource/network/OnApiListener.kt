@@ -3,5 +3,5 @@ package tw.teng.practice.contact.resource.network
 interface OnApiListener<T> {
     fun onApiTaskSuccess(responseData: T)
 
-    fun onApiTaskFailure()
+    fun onApiTaskFailure(toString: String)
 }

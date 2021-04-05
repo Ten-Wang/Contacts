@@ -9,11 +9,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tw.teng.practice.contact.R
 import tw.teng.practice.contact.ui.MainViewModel
+
 
 class ContactListFragment : Fragment(), ContactListAdapter.ContactListItemAdapterListener {
 
@@ -44,11 +44,7 @@ class ContactListFragment : Fragment(), ContactListAdapter.ContactListItemAdapte
         btnAll.setOnClickListener {
             viewModel.selectDisplayState(DisplayState.ALL.state)
         }
-        recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                activity, (recyclerView.layoutManager as LinearLayoutManager).orientation
-            )
-        )
+
         recyclerView.adapter = ContactListAdapter(this)
         viewModel.contactsListLiveData.observeForever {
             if (it.contacts != null) {

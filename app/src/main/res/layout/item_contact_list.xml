@@ -67,6 +67,7 @@
             android:id="@+id/tv_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="#111111"
             android:text="@string/name"
             app:layout_constraintBottom_toTopOf="@+id/tv_email"
             app:layout_constraintEnd_toEndOf="parent"

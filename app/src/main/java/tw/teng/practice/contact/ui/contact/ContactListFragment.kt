@@ -13,17 +13,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import tw.teng.practice.contact.R
-import tw.teng.practice.contact.resource.network.model.APIContacts
 import tw.teng.practice.contact.ui.MainViewModel
-import tw.teng.practice.contact.ui.contact.ContactListAdapter.ContactListItemAdapterListener
-import java.util.*
 
-class ContactListFragment : Fragment(), ContactListItemAdapterListener {
+class ContactListFragment : Fragment(), ContactListAdapter.ContactListItemAdapterListener {
 
     private val viewModel: MainViewModel by activityViewModels()
-    lateinit var navController: NavController
-    lateinit var btnStarred: AppCompatButton
-    lateinit var btnAll: AppCompatButton
+    private lateinit var navController: NavController
+    private lateinit var btnStarred: AppCompatButton
+    private lateinit var btnAll: AppCompatButton
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,13 +36,11 @@ class ContactListFragment : Fragment(), ContactListItemAdapterListener {
         val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
-        val viewHeader = LayoutInflater.from(context)
-            .inflate(R.layout.header_contact_list, (view.parent as ViewGroup), false)
-        btnStarred = viewHeader.findViewById(R.id.btn_starred)
+        btnStarred = view.findViewById(R.id.btn_starred)
         btnStarred.setOnClickListener {
             viewModel.selectDisplayState(DisplayState.STARRED.state)
         }
-        btnAll = viewHeader.findViewById(R.id.btn_all)
+        btnAll = view.findViewById(R.id.btn_all)
         btnAll.setOnClickListener {
             viewModel.selectDisplayState(DisplayState.ALL.state)
         }
@@ -54,21 +49,11 @@ class ContactListFragment : Fragment(), ContactListItemAdapterListener {
                 activity, (recyclerView.layoutManager as LinearLayoutManager).orientation
             )
         )
-
-        recyclerView.adapter = ContactListAdapter(
-            ArrayList<APIContacts.Contacts>(),
-            this
-        )
-        (recyclerView.adapter as ContactListAdapter).setHeaderView(viewHeader)
-
+        recyclerView.adapter = ContactListAdapter(this)
         viewModel.contactsListLiveData.observeForever {
             if (it.contacts != null) {
-                recyclerView.adapter = ContactListAdapter(
-                    it.contacts as ArrayList<APIContacts.Contacts>,
-                    this
-                )
-                (recyclerView.adapter as ContactListAdapter).setHeaderView(viewHeader)
-                (recyclerView.adapter as ContactListAdapter).notifyDataSetChanged()
+                (recyclerView.adapter as ContactListAdapter).setData(it)
+
             }
         }
 

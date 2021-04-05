@@ -54,7 +54,7 @@ class ContactListAdapter internal constructor(
 
         private val tvName: TextView = itemView.findViewById(R.id.tv_name)
         private val tvEmail: TextView = itemView.findViewById(R.id.tv_email)
-        private val progressBar: ProgressBar = itemView.findViewById(R.id.progressBar)
+        private val progressBar: ProgressBar = itemView.findViewById(R.id.progress_bar)
         private val imgAvatar: ImageView = itemView.findViewById(R.id.img_avatar)
         private val contentLayout: View = itemView.findViewById(R.id.item_user_content)
         private val imgIconStar: ImageView = itemView.findViewById(R.id.img_ic_star)

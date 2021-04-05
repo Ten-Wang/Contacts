@@ -33,7 +33,7 @@ class ContactListFragment : Fragment(), ContactListAdapter.ContactListItemAdapte
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.recyclerView)
+        val recyclerView = view.findViewById<RecyclerView>(R.id.recycler_view)
         recyclerView.layoutManager = LinearLayoutManager(activity)
 
         btnStarred = view.findViewById(R.id.btn_starred)

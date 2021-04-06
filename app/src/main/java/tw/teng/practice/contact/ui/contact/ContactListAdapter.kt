@@ -26,8 +26,11 @@ class ContactListAdapter internal constructor(
     RecyclerView.Adapter<ContactListAdapter.ContactViewHolder>() {
 
     internal var selectedPosition = -1
-    private lateinit var itemList: ArrayList<APIContacts.Contacts>
+    private var itemList: ArrayList<APIContacts.Contacts>
 
+    init {
+        itemList = ArrayList<APIContacts.Contacts>()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContactViewHolder {
         val inflater = LayoutInflater.from(parent.context)

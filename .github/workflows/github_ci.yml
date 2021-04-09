@@ -3,7 +3,7 @@ name: Build & Publish Debug APK
 on:
   push:
     branches:
-      - master
+      - feature/testCI
 
 jobs:
   build:

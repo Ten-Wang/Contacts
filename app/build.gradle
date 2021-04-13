@@ -33,6 +33,7 @@ android {
     }
     buildFeatures {
         dataBinding = true
+        viewBinding true
     }
 }
 
@@ -66,7 +67,7 @@ dependencies {
     implementation('com.squareup.okhttp3:logging-interceptor:4.7.2')
 
     // Navigation Component
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.4'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
 
     // Gson
     implementation 'com.google.code.gson:gson:2.8.6'

@@ -9,17 +9,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 
 open class BaseActivity : AppCompatActivity() {
-    lateinit var _viewModel: BaseViewModel
+    lateinit var viewModel: BaseViewModel
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        _viewModel = ViewModelProvider(this).get(BaseViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(BaseViewModel::class.java)
         (getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager).run {
             registerDefaultNetworkCallback(object : ConnectivityManager.NetworkCallback() {
                 override fun onAvailable(network: Network) {
                     super.onAvailable(network)
-                    _viewModel.onNetworkAvailable()
+                    viewModel.onNetworkAvailable()
                 }
             })
         }

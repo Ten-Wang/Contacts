@@ -112,7 +112,6 @@ class AppRepository private constructor(private val _application: Application) {
             }
         }
         contactsListLiveData.postValue(apiContacts)
-        displayModeLiveData.value = event
         displayModeLiveData.postValue(event)
     }
 
@@ -137,7 +136,6 @@ class AppRepository private constructor(private val _application: Application) {
                 local.sync(responseData, Pref.getStars(_application))
             )
         )
-        contactsListLiveData.value = local
         contactsListLiveData.postValue(local)
     }
 }
